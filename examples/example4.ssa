@@ -1,0 +1,27 @@
+Loop invariants:
+export function $main() {
+@l0
+        %i.1 =w copy 1
+        %x.2 =w copy 1
+@prehead@l1
+@l1
+        %i.3 =w phi @prehead@l1 %i.1, @l6 %i.6
+        %t8 =w csltw %i.3, 10
+        jnz %t8, @l2, @l3
+@l2
+        %j.4 =w copy 2
+@prehead@l4
+@l4
+        %j.5 =w phi @prehead@l4 %j.4, @l5 %j.7
+        %t13 =w csltw %j.5, 10
+        jnz %t13, @l5, @l6
+@l5
+        %t17 =w add %x.2, 0
+        %j.7 =w add %j.5, 1
+        jmp @l4
+@l6
+        %i.6 =w add %i.3, 1
+        jmp @l1
+@l3
+        retw 0
+}

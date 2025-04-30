@@ -1,0 +1,53 @@
+export function w $test4() {
+@start
+    %i =w copy 0                      # Инициализирует внешний счётчик %i, %y нулём
+    %y =w copy 1
+@outer
+    %cmp_outer =w ceqw %i, 5            # Сравнивает %i с 5 (внешний цикл)
+    jnz %cmp_outer, @end, @body_outer   # Если %i==5, переход в блок @end; иначе – в блок @body_outer
+@body_outer
+    %y =w add %y, 1
+    %x =w copy %i
+    %j =w copy 0                      # Инициализирует внутренний счётчик %j нулём
+@inner
+    %cmp_inner =w ceqw %j, 3            # Сравнивает %j с 3 (внутренний цикл)
+    jnz %cmp_inner, @end_inner, @body_inner  # Если %j==3, переход в блок @end_inner; иначе – в блок @body_inner
+@body_inner
+    %x =w copy %y
+    %j =w add %j, 1                   # Увеличивает %j на 1
+    jmp @inner                       # Переход в начало внутреннего цикла
+@end_inner
+    %i =w add %i, 1                   # Увеличивает %i на 1 (после внутреннего цикла)
+    jmp @outer                       # Переход в начало внешнего цикла
+@end
+    ret %i                          # Возвращает %i
+}
+
+***
+
+export function w $test4() {
+@start
+    %i =w copy 0
+    %y =w copy 1                      # Инициализирует внешний счётчик %i, %y нулём
+@outer
+    %cmp_outer =w ceqw %i, 5            # Сравнивает %i с 5 (внешний цикл)
+    jnz %cmp_outer, @end, @body_outer   # Если %i==5, переход в блок @end; иначе – в блок @body_outer
+@body_outer
+    %y =w add %y, 1
+    %x.1 =w copy %i
+    %j =w copy 0                      # Инициализирует внутренний счётчик %j нулём
+@prehead@inner
+    %x.2 =w copy %y
+@inner
+    %cmp_inner =w ceqw %j, 3            # Сравнивает %j с 3 (внутренний цикл)
+    jnz %cmp_inner, @end_inner, @body_inner  # Если %j==3, переход в блок @end_inner; иначе – в блок @body_inner
+@body_inner
+    %j =w add %j, 1                   # Увеличивает %j на 1
+    jmp @inner                       # Переход в начало внутреннего цикла
+@end_inner
+	
+    %i =w add %i, 1                   # Увеличивает %i на 1 (после внутреннего цикла)
+    jmp @outer                       # Переход в начало внешнего цикла
+@end
+    ret %i                          # Возвращает %i
+}

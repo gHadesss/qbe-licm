@@ -1,0 +1,28 @@
+export function $main() {
+@start
+        %b.3 =w copy 1
+        %i.4 =w copy 1
+@prehead@b2
+        %c.6 =w copy 2
+        %a.8 =q add %b.3, 1
+@b2
+        %i.5 =w phi @prehead@b2 %i.4, @b6 %i.9
+        %d.7 =w add %b.3, %i.5
+@b3
+        %tmp1 =w urem %i.5, 2
+        %tmp2 =w ceqw %tmp1, 0
+        jnz %tmp2, @b4, @b5
+@b4
+        %d.1 =w add %a.8, %d.7
+        %e =w add %d.1, 1
+        jmp @b6
+@b5
+        %d.2 =w copy %c.6
+        %f =w add %d.2, 1
+@b6
+        %i.9 =w add %i.5, 1
+        %tmp3 =w cugtw %i.9, 100
+        jnz %tmp3, @exit, @b2
+@exit
+        retw 0
+}

@@ -1,0 +1,26 @@
+export function w $test2() {
+@start
+    %i =w copy 0         # Инициализирует %i нулём
+    jmp @loop             # Переход к циклу
+@loop
+    %cmp =w ceqw %i, 10   # Сравнивает %i с 10
+    %i =w add %i, 1      # Увеличивает %i на 1
+    jnz %cmp, @end, @body  # Если %cmp ненулевой (условие истинно), переход в блок @end; иначе – в блок @body
+@end
+    ret %i              # Возвращает %i
+}
+
+
+***
+
+export function w $test2() {
+@start
+    %i =w copy 0         # Инициализирует %i нулём
+    jmp @loop             # Переход к циклу
+@loop
+    %cmp =w ceqw %i, 10   # Сравнивает %i с 10
+    %i =w add %i, 1      # Увеличивает %i на 1
+    jnz %cmp, @end, @body  # Если %cmp ненулевой (условие истинно), переход в блок @end; иначе – в блок @body
+@end
+    ret %i              # Возвращает %i
+}

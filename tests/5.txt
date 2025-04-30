@@ -1,0 +1,48 @@
+export function w $test5() {
+@start
+    %i =w copy 0                      # Инициализирует внешний счётчик %i нулём
+@outer
+    %cmp_outer =w ceqw %i, 5            # Сравнивает %i с 5 (внешний цикл)
+    jnz %cmp_outer, @end, @body_outer   # Если %i==5, переход в @end; иначе – в @body_outer
+@body_outer
+    %j =w copy 0                      # Инициализирует внутренний счётчик %j нулём
+    jmp @inner                       # Переход к внутреннему циклу
+@inner
+    %cmp_inner =w ceqw %j, 3            # Сравнивает %j с 3 (внутренний цикл)
+    jnz %cmp_inner, @end_inner, @body_inner  # Если %j==3, переход в @end_inner; иначе – в @body_inner
+@body_inner
+    %inv =w add const 4, const 5         # Вычисляет 4+5 (инвариант для обоих циклов)
+    %j =w add %j, 1                   # Увеличивает %j на 1
+    jmp @inner                       # Переход в начало внутреннего цикла
+@end_inner
+    %i =w add %i, 1                   # Увеличивает %i на 1 (после внутреннего цикла)
+    jmp @outer                       # Переход в начало внешнего цикла
+@end
+    ret %i                          # Возвращает %i
+}
+
+***
+
+export function w $test5() {
+@start
+    %i =w copy 0                      # Инициализирует внешний счётчи к %i нулём
+@prehead@outer
+    %inv =w add const 4, const 5         # Вычисляет 4+5 (инвариант вынесен для внешнего и внутреннего циклов)
+@outer
+    %cmp_outer =w ceqw %i, 5            # Сравнивает %i с 5 (внешний цикл)
+    jnz %cmp_outer, @end, @body_outer   # Если %i==5, переход в @end; иначе – в @body_outer
+@body_outer
+    %j =w copy 0                      # Инициализирует внутренний счётчик %j нулём
+    jmp @inner                       # Переход к внутреннему циклу
+@inner
+    %cmp_inner =w ceqw %j, 3            # Сравнивает %j с 3 (внутренний цикл)
+    jnz %cmp_inner, @end_inner, @body_inner  # Если %j==3, переход в @end_inner; иначе – в @body_inner
+@body_inner
+    %j =w add %j, 1                   # Увеличивает %j на 1
+    jmp @inner                       # Переход в начало внутреннего цикла
+@end_inner
+    %i =w add %i, 1                   # Увеличивает %i на 1 (после внутреннего цикла)
+    jmp @outer                       # Переход в начало внешнего цикла
+@end
+    ret %i                          # Возвращает %i
+}

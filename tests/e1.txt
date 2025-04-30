@@ -1,0 +1,26 @@
+--- Input: size 115 ---
+export function w $foo() {
+@start
+%x =w copy 1
+@d0
+%y =w copy %x
+@d1
+%z =w add %x, %y
+jnz %z, @d0, @end
+@end
+ret
+}
+
+--- Output: size 141 ---
+export function $foo() {
+@start
+	%x.1 =w copy 1
+@prehead@d0
+	%z =w add %x.1, %y.2
+	%y.2 =w copy %x.1
+@d0
+@d1
+	jnz %z, @d0, @end
+@end
+	ret0
+}

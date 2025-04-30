@@ -1,0 +1,30 @@
+export function w $test3() {
+@start
+    %i =w copy 0                     # Инициализирует счётчик %i нулём
+@loop
+    %cmp =w ceqw %i, 10              # Сравнивает %i с 10
+    jnz %cmp, @end, @body           # Если условие истинно, переход в блок @end; иначе – в блок @body
+@body
+    %inv =w add const 2, const 3      # Вычисляет 2+3 (инвариант)
+    %i =w add %i, 1                  # Инкрементирует %i
+    jmp @loop                        # Переход в начало цикла
+@end
+    ret %i                           # Возвращает %i
+}
+
+***
+
+export function w $test3() {
+@start
+    %i =w copy 0                     # Инициализирует счётчик %i нулём
+@prehead@loop
+    %inv.1 =w add const 2, const 3     # Вычисляет 2+3 (инвариант вынесен)
+@loop
+    %cmp =w ceqw %i, 10              # Сравнивает %i с 10
+    jnz %cmp, @end, @body           # Если условие истинно, переход в блок @end; иначе – в блок @body
+@body
+    %i =w add %i, 1                  # Инкрементирует %i
+    jmp @loop                        # Переход в начало цикла
+@end
+    ret %i                           # Возвращает %i
+}

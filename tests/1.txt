@@ -1,0 +1,13 @@
+export function w $test1() {
+@start
+    %a =w copy 42         # Копирует константу 42 в %a
+    ret %a                # Возвращает %a
+}
+
+***
+
+export function w $test1() {
+@start
+    %a =w copy 42         # Копирует константу 42 в %a
+    ret %a                # Возвращает %a
+}
