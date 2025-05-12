@@ -25,8 +25,8 @@ using Edge = std::pair<Blk*, Blk*>;
 template<typename T>
 using Set = std::unordered_set<T>;
 
-/**
- * Для того чтобы хэш для unordered_set от Edge работал
+/*
+ *  ytachio: Для того чтобы хэш для unordered_set от Edge работал
  */
 template<>
 struct std::hash<Edge> {
@@ -42,7 +42,8 @@ struct std::hash<std::pair<const Blk *, int>> {
     }
 };
 
-/** @author ermolovich
+/**
+ *  @author ermolovich
  *  @brief  Поиск обратных дуг перебором всех дуг ГПУ функции fn
  *  @param  fn Указатель на структуру обрабатываемой функции
  *  @return Множество всех обратных дуг ГПУ функции fn
@@ -91,17 +92,17 @@ Set<Edge> find_back_edges(Fn *fn) {
     return set;
 }
 
-/** @author ermolovich
+/**
+ *  @author ermolovich
  *  @brief  Построение множества блоков естественного цикла по вектору его обратных дуг
  *  @param  edges Вектор обратных дуг, входящих в один заголовок цикла
  *  @return Множество всех базовых блоков цикла
  */
 Set<Blk*> fill_loop_set(std::vector<Edge> edges) {
-    // if several back edges are pointing to one header,
-    // all of them are inside the same loop
-
     Set<Blk*> loop;
 
+    /* Если несколько обратных дуг указывают на один заголовок,
+     * то все они принадлежат одному циклу */
     for (int i = 0; i < edges.size(); i++) {
         std::stack<Blk*> s;
         s.push(edges[i].first);
@@ -125,6 +126,7 @@ Set<Blk*> fill_loop_set(std::vector<Edge> edges) {
 }
 
 /**
+ *  @author ermolovich
  *  @brief  Нахождение всех циклов функции fn
  *  @param  fn Указатель на структуру обрабатываемой функции
  *  @param  be Множество всех обратных дуг ГПУ функции fn
@@ -159,6 +161,7 @@ std::vector<std::pair<Blk*, Set<Blk*>>> fill_loops(Fn *fn, Set<Edge> be) {
     return loops;
 }
 
+/**  @author zvancov.mu */
 void print_instruction(const Ins &ins) {
     char *rtypes[2] = {
         "RTmp",
@@ -206,7 +209,8 @@ bool is_defined_out_of_loop(const Fn &fn, const Set<Blk *> &loop, const uint ref
     return true;
 }
 
-/** @author zvancov.mu
+/**
+ *  @author zvancov.mu
  *  @brief  Является ли операнд инвариантным
  *  @param  reference Операнд
  *  @param  invariants Известное множество инвариантов
@@ -234,7 +238,8 @@ variant_reference:
     return false;
 }
 
-/** @author zvancov.mu
+/**
+ *  @author zvancov.mu
  *  @brief  Является ли инструкция инвариантной
  *  @param  ins Указатель на инструкцию
  *  @param  invariants Известное множество инвариантов
@@ -281,7 +286,8 @@ variant_instruction:
     return false;
 }
 
-/** @author zvancov.mu
+/**
+ *  @author zvancov.mu
  *  @brief  Найти блок выхода. Предполагается наличие ровно одного выхода
  *  @param  entry Указатель базовый блок вход
  *  @param  loop Множество базовых блоков цикла
@@ -296,9 +302,10 @@ const Blk * find_exit(const Blk *entry, const Set<Blk *> &loop) {
 }
 
 /**
- * @brief safe preheader name construction, takes less than 24 chars 
- * @param dst array of preheader name's chars
- * @param src array of successor name's chars
+ *  @author ytachio
+ *  @brief  safe preheader name construction, takes less than 24 chars
+ *  @param  dst array of preheader name's chars
+ *  @param  src array of successor name's chars
 */
 void fill_preheader_name(char dst[32], char src[32]){
     char tmp = src[23];
@@ -308,6 +315,7 @@ void fill_preheader_name(char dst[32], char src[32]){
 }
 
 /**
+ *  @author ytachio
  *  @brief  Вставка предзаголовка перед циклом loop с заголовком h функции fn
  *  @param  fn   Указатель на структуру обрабатываемой функции
  *  @param  h    Указатель на базовый блок заголовка цикла
@@ -356,9 +364,10 @@ Blk *insert_preheader(Fn *fn, Blk *h, Set<Blk*> &loop) {
 }
 
 /**
- * @brief moves marked invariant instructions to preheader
- * @param ph preheader Blk pointer
- * @param inv_instr_set consits of Blk and order of marked instruction in it
+ *  @author ytachio
+ *  @brief moves marked invariant instructions to preheader
+ *  @param ph preheader Blk pointer
+ *  @param inv_instr_set consits of Blk and order of marked instruction in it
 */
 void move_instructions(Blk *ph, Set<std::pair<const Blk *, int>> inv_instr_set){
     auto old_count = ph->nins;
@@ -375,7 +384,7 @@ void move_instructions(Blk *ph, Set<std::pair<const Blk *, int>> inv_instr_set){
     for (const auto &[blk, ins_order] : inv_instr_set) {
         new_ins_arr[write_ptr++] = blk->ins[ins_order];
         blk_size_diff[(Blk *)blk]++;
-        DBG_PRINT("moved\n\t"); 
+        DBG_PRINT("moved\n\t");
         print_instruction(blk->ins[ins_order]);
         DBG_PRINT("\tfrom %s to %s;\n", blk->name, ph->name);
     }
@@ -402,7 +411,8 @@ void move_instructions(Blk *ph, Set<std::pair<const Blk *, int>> inv_instr_set){
     ph->nins = write_ptr;
 }
 
-/** @author zvancov.mu
+/**
+ *  @author zvancov.mu
  *  @brief  Движение инвариантного кода
  *  @param  fn   Указатель на структуру обрабатываемой функции
  *  @param  header    Указатель на базовый блок заголовка цикла
